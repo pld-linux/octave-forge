@@ -1,3 +1,4 @@
+# TODO: qhull (protos conflict in configure), GiNaC
 Summary:	Extensions for GNU Octave
 Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
@@ -9,6 +10,7 @@ Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
 # Source0-md5:	2c8a35bc59844c1fd4068a1213a3bc26
 Patch0:		%{name}-no_bashizm.patch
 Patch1:		%{name}-pic.patch
+Patch2:		%{name}-make.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
@@ -38,6 +40,7 @@ do istniej±cego pakietu, octave-forge jest odpowiednim miejscem.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
