@@ -11,6 +11,7 @@ Patch0:		%{name}-no_bashizm.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	XFree86-devel
 BuildRequires:	gcc-g77
+BuildRequires:	hdf5-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	octave-devel = 2:2.1.53
