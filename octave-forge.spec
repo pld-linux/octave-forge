@@ -1,27 +1,38 @@
-Summary:	extensions for GNU Octave
-Summary(pl):	rozszerzenia dla GNU Octave
+Summary:	Extensions for GNU Octave
+Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	2003.06.02
+Version:	2004.02.12
 Release:	1
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
-# Source0-md5:	73e24fc661bc94d83535e4387d24cea3
+# Source0-md5:	2c8a35bc59844c1fd4068a1213a3bc26
+Patch0:		%{name}-no_bashizm.patch
 URL:		http://octave.sourceforge.net/
-BuildRequires:	octave-devel
+BuildRequires:	XFree86-devel
 BuildRequires:	gcc-g77
+BuildRequires:	libjpeg-devel
+BuildRequires:	libpng-devel
+BuildRequires:	octave-devel = 2:2.1.53
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Set of custom scripts, functions and extensions for GNU Octave.
+octave-forge (http://octave.sf.net) is a community project for
+collaborative development of octave extensions. If you have a large
+package that you want to open up to collaborative development, or a
+couple of m-files that you want to contribute to an existing package,
+octave-forge is the place to do it.
 
 %description -l pl
 Zestaw dodatkowych skryptów, funkcji i rozszerzeñ dla GNU Octave.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
+export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
 ./autogen.sh
 %configure
 %{__make}
@@ -33,9 +44,11 @@ rm -rf $RPM_BUILD_ROOT
 	MPATH="$RPM_BUILD_ROOT$( octave-config --m-site-dir )/%{name}" \
 	OPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )/%{name}" \
 	XPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )" \
+	ALTMPATH="$RPM_BUILD_ROOT$( octave-config --m-site-dir )/%{name}" \
+	ALTOPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )/%{name}" \
 	mandir="$RPM_BUILD_ROOT%{_mandir}" \
 	bindir="$RPM_BUILD_ROOT%{_bindir}"
-find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f 
+find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -49,13 +62,16 @@ fi
 
 %postun
 if [ "$1" = "0" ]; then
-        umask 027
-        grep -E -v "octave-forge" "%{_datadir}/octave/site/m/startup/octaverc" > "%{_datadir}/octave/site/m/startup/octaverc.tmp"
-        mv -f "%{_datadir}/octave/site/m/startup/octaverc.tmp" "%{_datadir}/octave/site/m/startup/octaverc"
+	umask 027
+	grep -E -v "octave-forge" "%{_datadir}/octave/site/m/startup/octaverc" > "%{_datadir}/octave/site/m/startup/octaverc.tmp"
+	mv -f "%{_datadir}/octave/site/m/startup/octaverc.tmp" "%{_datadir}/octave/site/m/startup/octaverc"
 fi
 
 %files
 %defattr(644,root,root,755)
+%doc AUTHORS ChangeLog INDEX README RELEASE-NOTES TODO
+%doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
+%doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man*/*
 %( octave-config --m-site-dir )/%{name}
