@@ -2,14 +2,16 @@ Summary:	Extensions for GNU Octave
 Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
 Version:	2004.02.12
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
 # Source0-md5:	2c8a35bc59844c1fd4068a1213a3bc26
 Patch0:		%{name}-no_bashizm.patch
+Patch1:		%{name}-pic.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	XFree86-devel
+BuildRequires:	autoconf
 BuildRequires:	gcc-g77
 BuildRequires:	hdf5-devel
 BuildRequires:	libjpeg-devel
@@ -35,6 +37,7 @@ do istniej±cego pakietu, octave-forge jest odpowiednim miejscem.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
