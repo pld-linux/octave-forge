@@ -35,6 +35,7 @@ rm -rf $RPM_BUILD_ROOT
 	XPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )" \
 	mandir="$RPM_BUILD_ROOT%{_mandir}" \
 	bindir="$RPM_BUILD_ROOT%{_bindir}"
+find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f 
 
 %clean
 rm -rf $RPM_BUILD_ROOT
