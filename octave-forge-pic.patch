@@ -1,0 +1,20 @@
+--- octave-forge-2004.02.12/main/miscellaneous/Makefile.orig	2004-01-31 22:45:28.000000000 +0100
++++ octave-forge-2004.02.12/main/miscellaneous/Makefile	2004-08-01 22:57:35.250363102 +0200
+@@ -23,7 +23,7 @@
+ 	$(MKOCTFILE) -c listencanfork.c
+ 
+ xmltree.o: xmltree.c xmltree.h
+-	$(CC) -c $< -o $@
++	$(CC) $(CFLAGS) $(CPICFLAG) -c $< -o $@
+ 
+ ifdef FLEXML
+ xmltree_read.l: xmltree_read.act octave.dtd
+@@ -36,7 +36,7 @@
+ endif
+ 
+ xmltree_read.o: xmltree_read.c xmltree_read.h
+-	$(CC) -c $< -o $@
++	$(CC) $(CFLAGS) $(CPICFLAG) -c $< -o $@
+ 
+ xmlread.o: xmlread.cc xmltree_read.h xmltree.h
+ 	$(MKOCTFILE) -c $< -o $@
