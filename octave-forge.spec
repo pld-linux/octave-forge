@@ -1,22 +1,23 @@
 Summary:	Extensions for GNU Octave
 Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	2004.07.07
+Version:	2004.09.09
 Release:	0.1
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
-# Source0-md5:	28ac7f738801b6928a062a58b0417746
+# Source0-md5:	48c32a66b1ff9c8303240f83a8af1c94
 Patch0:		%{name}-make.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
 BuildRequires:	gcc-g77
+BuildRequires:	gsl-devel
 BuildRequires:	hdf5-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	octave-devel >= 2:2.1.57
+BuildRequires:	octave-devel >= 2:2.1.58
 BuildRequires:	qhull-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -84,5 +85,9 @@ fi
 %doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man*/*
-%( octave-config --m-site-dir )/%{name}
-%( octave-config --oct-site-dir )/%{name}
+%(octave-config --m-site-dir)/%{name}
+%dir %(octave-config --oct-site-dir)/%{name}
+%(octave-config --oct-site-dir)/%{name}/*.[ho]
+%attr(755,root,root) %(octave-config --oct-site-dir)/%{name}/*.oct
+%attr(755,root,root) %(octave-config --oct-site-dir)/aurecord
+%attr(755,root,root) %(octave-config --oct-site-dir)/rasmol.sh
