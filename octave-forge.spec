@@ -1,16 +1,13 @@
 Summary:	Extensions for GNU Octave
 Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	2004.02.12
-Release:	3
+Version:	2004.07.07
+Release:	0.1
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
-# Source0-md5:	2c8a35bc59844c1fd4068a1213a3bc26
-Patch0:		%{name}-no_bashizm.patch
-Patch1:		%{name}-pic.patch
-Patch2:		%{name}-make.patch
-Patch3:		%{name}-qhull.patch
+# Source0-md5:	28ac7f738801b6928a062a58b0417746
+Patch0:		%{name}-make.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
 BuildRequires:	XFree86-devel
@@ -19,7 +16,7 @@ BuildRequires:	gcc-g77
 BuildRequires:	hdf5-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	octave-devel = 2:2.1.53
+BuildRequires:	octave-devel >= 2:2.1.57
 BuildRequires:	qhull-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -41,9 +38,6 @@ do istniej±cego pakietu, octave-forge jest odpowiednim miejscem.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
@@ -64,6 +58,8 @@ rm -rf $RPM_BUILD_ROOT
 	bindir="$RPM_BUILD_ROOT%{_bindir}"
 find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f
 
+mv $RPM_BUILD_ROOT%{_bindir}/mex $RPM_BUILD_ROOT%{_bindir}/mex-octave           
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -83,7 +79,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog INDEX README RELEASE-NOTES TODO
+%doc AUTHORS ChangeLog README RELEASE-NOTES TODO
 %doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
 %doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
 %attr(755,root,root) %{_bindir}/*
