@@ -18,7 +18,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 Set of custom scripts, functions and extensions for GNU Octave.
-octave-forge (http://octave.sf.net) is a community project for
+octave-forge (http://octave.sf.net/) is a community project for
 collaborative development of octave extensions. If you have a large
 package that you want to open up to collaborative development, or a
 couple of m-files that you want to contribute to an existing package,
@@ -26,6 +26,10 @@ octave-forge is the place to do it.
 
 %description -l pl
 Zestaw dodatkowych skryptów, funkcji i rozszerzeñ dla GNU Octave.
+octave-forge (http://octave.sf.net/) to spo³eczny projekt do wspólnego
+rozwijania rozszerzeñ octave. Je¶li mamy pakiet, który chcemy otworzyæ
+w celu wspólnego rozwijania albo zbiór plików .m, które chcemy wnie¶æ
+do istniej±cego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
 %setup -q
