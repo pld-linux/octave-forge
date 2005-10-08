@@ -1,23 +1,26 @@
 Summary:	Extensions for GNU Octave
 Summary(pl):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	2004.09.09
-Release:	0.1
+Version:	2005.06.13
+Release:	1
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
-# Source0-md5:	48c32a66b1ff9c8303240f83a8af1c94
+# Source0-md5:	cf82a74d27636abf07f1732b4851f2e2
 Patch0:		%{name}-make.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
+BuildRequires:	fftw3-devel
 BuildRequires:	gcc-g77
 BuildRequires:	gsl-devel
 BuildRequires:	hdf5-devel
+BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	octave-devel >= 2:2.1.58
+BuildRequires:	pcre-devel
 BuildRequires:	qhull-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
