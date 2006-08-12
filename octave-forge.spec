@@ -62,7 +62,7 @@ rm -rf $RPM_BUILD_ROOT
 	bindir="$RPM_BUILD_ROOT%{_bindir}"
 find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f
 
-mv $RPM_BUILD_ROOT%{_bindir}/mex $RPM_BUILD_ROOT%{_bindir}/mex-octave           
+mv $RPM_BUILD_ROOT%{_bindir}/mex $RPM_BUILD_ROOT%{_bindir}/mex-octave
 
 %clean
 rm -rf $RPM_BUILD_ROOT
