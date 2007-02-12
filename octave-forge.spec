@@ -1,5 +1,5 @@
 Summary:	Extensions for GNU Octave
-Summary(pl):	Rozszerzenia dla GNU Octave
+Summary(pl.UTF-8):   Rozszerzenia dla GNU Octave
 Name:		octave-forge
 Version:	2005.06.13
 Release:	1
@@ -32,12 +32,12 @@ package that you want to open up to collaborative development, or a
 couple of m-files that you want to contribute to an existing package,
 octave-forge is the place to do it.
 
-%description -l pl
-Zestaw dodatkowych skryptów, funkcji i rozszerzeñ dla GNU Octave.
-octave-forge (http://octave.sf.net/) to spo³eczny projekt do wspólnego
-rozwijania rozszerzeñ octave. Je¶li mamy pakiet, który chcemy otworzyæ
-w celu wspólnego rozwijania albo zbiór plików .m, które chcemy wnie¶æ
-do istniej±cego pakietu, octave-forge jest odpowiednim miejscem.
+%description -l pl.UTF-8
+Zestaw dodatkowych skryptÃ³w, funkcji i rozszerzeÅ„ dla GNU Octave.
+octave-forge (http://octave.sf.net/) to spoÅ‚eczny projekt do wspÃ³lnego
+rozwijania rozszerzeÅ„ octave. JeÅ›li mamy pakiet, ktÃ³ry chcemy otworzyÄ‡
+w celu wspÃ³lnego rozwijania albo zbiÃ³r plikÃ³w .m, ktÃ³re chcemy wnieÅ›Ä‡
+do istniejÄ…cego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
 %setup -q
