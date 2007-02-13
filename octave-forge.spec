@@ -1,5 +1,5 @@
 Summary:	Extensions for GNU Octave
-Summary(pl.UTF-8):   Rozszerzenia dla GNU Octave
+Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
 Version:	2005.06.13
 Release:	1
