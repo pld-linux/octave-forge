@@ -1,25 +1,25 @@
 Summary:	Extensions for GNU Octave
 Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	2005.06.13
-Release:	1
+Version:	20071014
+Release:	0.1
 License:	GPL
 Group:		Applications/Math
-Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
-# Source0-md5:	cf82a74d27636abf07f1732b4851f2e2
-Patch0:		%{name}-make.patch
+Source0:	http://dl.sourceforge.net/octave/%{name}-bundle-%{version}.tar.gz
+# Source0-md5:	346f61edc714515701d2b293d4a266d3
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
 BuildRequires:	XFree86-devel
 BuildRequires:	autoconf
+BuildRequires:	bash
 BuildRequires:	fftw3-devel
-BuildRequires:	gcc-g77
+BuildRequires:	gcc-fortran
 BuildRequires:	gsl-devel
 BuildRequires:	hdf5-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	octave-devel >= 2:2.1.58
+BuildRequires:	octave-devel >= 2:2.9.15
 BuildRequires:	pcre-devel
 BuildRequires:	qhull-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -40,14 +40,31 @@ w celu wspólnego rozwijania albo zbiór plików .m, które chcemy wnieść
 do istniejącego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup -q -n %{name}-bundle-%{version}
 
 %build
-export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
-./autogen.sh
-%configure
-%{__make}
+CFLAGS="%{rpmcflags} -I/usr/include/ncurses" ; export CFLAGS
+for d in main extras ; do
+	cd $d
+	for pkg in *.tar.gz ; do
+		P=${pkg%%.tar.gz}
+		tar zxf $pkg
+		cd $P
+		if [ -e src/autogen.sh ]; then
+			cd src
+			/bin/bash ./autogen.sh
+			cd ..
+		fi
+		if [ -e src/configure ]; then
+			cd src
+			%configure
+			cd ..
+		fi
+		%{__make}
+		cd ..
+	done
+	cd ..
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
