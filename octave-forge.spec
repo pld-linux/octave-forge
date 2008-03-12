@@ -24,6 +24,9 @@ BuildRequires:	pcre-devel
 BuildRequires:	qhull-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		octave_m_site_dir %(octave-config --m-site-dir 2>/dev/null)
+%define		octave_oct_site_dir %(octave-config --oct-site-dir 2>/dev/null)
+
 %description
 Set of custom scripts, functions and extensions for GNU Octave.
 octave-forge (http://octave.sf.net/) is a community project for
@@ -43,8 +46,8 @@ do istniejącego pakietu, octave-forge jest odpowiednim miejscem.
 %setup -q -n %{name}-bundle-%{version}
 
 %build
-CFLAGS="%{rpmcflags} -I/usr/include/ncurses" ; export CFLAGS
-for d in main extras ; do
+CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
+for d in main extras; do
 	cd $d
 	for pkg in *.tar.gz ; do
 		P=${pkg%%.tar.gz}
@@ -70,11 +73,11 @@ done
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	MPATH="$RPM_BUILD_ROOT$( octave-config --m-site-dir )/%{name}" \
-	OPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )/%{name}" \
-	XPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )" \
-	ALTMPATH="$RPM_BUILD_ROOT$( octave-config --m-site-dir )/%{name}" \
-	ALTOPATH="$RPM_BUILD_ROOT$( octave-config --oct-site-dir )/%{name}" \
+	MPATH="$RPM_BUILD_ROOT%{octave_m_site_dir}/%{name}" \
+	OPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}/%{name}" \
+	XPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}" \
+	ALTMPATH="$RPM_BUILD_ROOT%{octave_m_site_dir}/%{name}" \
+	ALTOPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}/%{name}" \
 	mandir="$RPM_BUILD_ROOT%{_mandir}" \
 	bindir="$RPM_BUILD_ROOT%{_bindir}"
 find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f
@@ -88,7 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 if [ -f "%{_datadir}/octave/site/m/startup/octaverc" ] && \
 	! grep -q "octave-forge" "%{_datadir}/octave/site/m/startup/octaverc"
 then
-	echo "LOADPATH = [ '$( octave-config --oct-site-dir)/octave-forge:$( octave-config --m-site-dir)/octave-forge/:', LOADPATH ];" >> "%{_datadir}/octave/site/m/startup/octaverc"
+	echo "LOADPATH = [ '%{octave_oct_site_dir}/octave-forge:%{octave_m_site_dir}/octave-forge/:', LOADPATH ];" >> "%{_datadir}/octave/site/m/startup/octaverc"
 fi
 
 %postun
@@ -105,9 +108,9 @@ fi
 %doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man*/*
-%(octave-config --m-site-dir)/%{name}
-%dir %(octave-config --oct-site-dir)/%{name}
-%(octave-config --oct-site-dir)/%{name}/*.[ho]
-%attr(755,root,root) %(octave-config --oct-site-dir)/%{name}/*.oct
-%attr(755,root,root) %(octave-config --oct-site-dir)/aurecord
-%attr(755,root,root) %(octave-config --oct-site-dir)/rasmol.sh
+%{octave_m_site_dir}/%{name}
+%dir %{octave_oct_site_dir}/%{name}
+%{octave_oct_site_dir}/%{name}/*.[ho]
+%attr(755,root,root) %{octave_oct_site_dir}/%{name}/*.oct
+%attr(755,root,root) %{octave_oct_site_dir}/aurecord
+%attr(755,root,root) %{octave_oct_site_dir}/rasmol.sh
