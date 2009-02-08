@@ -2,7 +2,7 @@ Summary:	Extensions for GNU Octave
 Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
 Version:	2006.07.09
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
