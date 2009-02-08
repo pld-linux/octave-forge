@@ -1,17 +1,18 @@
 Summary:	Extensions for GNU Octave
 Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	20071014
-Release:	0.1
+Version:	2006.07.09
+Release:	1
 License:	GPL
 Group:		Applications/Math
-Source0:	http://dl.sourceforge.net/octave/%{name}-bundle-%{version}.tar.gz
-# Source0-md5:	346f61edc714515701d2b293d4a266d3
+Source0:	http://dl.sourceforge.net/octave/%{name}-%{version}.tar.gz
+# Source0-md5:	94a844d1e41aca9580fde00e023e4e5b
+Patch0:		%{name}-make.patch
 URL:		http://octave.sourceforge.net/
-BuildRequires:	GiNaC-devel
-BuildRequires:	XFree86-devel
+# no ginac-config anyway
+#BuildRequires:	GiNaC-devel
+BuildRequires:	ImageMagick-c++-devel
 BuildRequires:	autoconf
-BuildRequires:	bash
 BuildRequires:	fftw3-devel
 BuildRequires:	gcc-fortran
 BuildRequires:	gsl-devel
@@ -19,9 +20,13 @@ BuildRequires:	hdf5-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	octave-devel >= 2:2.9.15
+BuildRequires:	octave-devel >= 2:2.1.58
 BuildRequires:	pcre-devel
+BuildRequires:	readline-devel
 BuildRequires:	qhull-devel
+BuildRequires:	xorg-lib-libICE-devel
+BuildRequires:	xorg-lib-libSM-devel
+BuildRequires:	xorg-lib-libX11-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_m_site_dir %(octave-config --m-site-dir 2>/dev/null)
@@ -43,31 +48,16 @@ w celu wspólnego rozwijania albo zbiór plików .m, które chcemy wnieść
 do istniejącego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
-%setup -q -n %{name}-bundle-%{version}
+%setup -q
+%patch0 -p1
 
 %build
-CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
-for d in main extras; do
-	cd $d
-	for pkg in *.tar.gz ; do
-		P=${pkg%%.tar.gz}
-		tar zxf $pkg
-		cd $P
-		if [ -e src/autogen.sh ]; then
-			cd src
-			/bin/bash ./autogen.sh
-			cd ..
-		fi
-		if [ -e src/configure ]; then
-			cd src
-			%configure
-			cd ..
-		fi
-		%{__make}
-		cd ..
-	done
-	cd ..
-done
+export CXXFLAGS="%{rpmcflags} -fno-use-cxa-atexit"
+./autogen.sh
+%configure
+# NOTE: as this is an ancient version of octave-forge, some things
+# wont't compile with octave 2.9+. 
+%{__make} || :
 
 %install
 rm -rf $RPM_BUILD_ROOT
