@@ -1,27 +1,48 @@
 Summary:	Extensions for GNU Octave
 Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
-Version:	20071014
+Version:	20080831
 Release:	0.1
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-bundle-%{version}.tar.gz
-# Source0-md5:	346f61edc714515701d2b293d4a266d3
+# Source0-md5:	680ea705eb7434e219eb4a3eaffd7fba
+Patch0:		%{name}-postgresql.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
-BuildRequires:	XFree86-devel
+BuildRequires:	ImageMagick-c++-devel
+# for jhandlers which doesn't build :/
+#BuildRequires:	OpenGL-devel
 BuildRequires:	autoconf
 BuildRequires:	bash
+BuildRequires:	blas-devel
+BuildRequires:	ffmpeg-devel
 BuildRequires:	fftw3-devel
+BuildRequires:	ftplib-devel
 BuildRequires:	gcc-fortran
+BuildRequires:	ghostscript
 BuildRequires:	gsl-devel
 BuildRequires:	hdf5-devel
+BuildRequires:	jar
+BuildRequires:	jdk
 BuildRequires:	lapack-devel
+BuildRequires:	libgcj-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
+BuildRequires:	mysql-devel
 BuildRequires:	octave-devel >= 2:2.9.15
 BuildRequires:	pcre-devel
+BuildRequires:	postgresql-devel
 BuildRequires:	qhull-devel
+BuildRequires:	sqlite3-devel
+BuildRequires:	swig >= 1.3.38
+BuildRequires:	tetex
+BuildRequires:	tetex-dvips
+BuildRequires:	texinfo
+BuildRequires:	unixODBC-devel
+BuildRequires:	xorg-lib-libX11-devel
+Requires:	octave >= 2:2.9.15
+Requires:	ImageMagick
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		octave_m_site_dir %(octave-config --m-site-dir 2>/dev/null)
@@ -44,26 +65,29 @@ do istniejącego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
 %setup -q -n %{name}-bundle-%{version}
+for d in main extra; do
+	cd $d
+	for pkg in *.tar.gz ; do
+		tar zxf $pkg
+	done
+done
+%patch0 -p1
+cd main/database-1.0.1/src
+./autogen.sh
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
-for d in main extras; do
+for d in main extra; do
 	cd $d
 	for pkg in *.tar.gz ; do
 		P=${pkg%%.tar.gz}
-		tar zxf $pkg
 		cd $P
-		if [ -e src/autogen.sh ]; then
-			cd src
-			/bin/bash ./autogen.sh
-			cd ..
-		fi
 		if [ -e src/configure ]; then
 			cd src
 			%configure
 			cd ..
 		fi
-		%{__make}
+		%{__make} || :
 		cd ..
 	done
 	cd ..
