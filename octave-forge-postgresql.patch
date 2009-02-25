@@ -1,0 +1,40 @@
+--- octave-forge-bundle-20080831/main/database-1.0.1/src/configure.base~	2008-08-24 18:14:37.000000000 +0200
++++ octave-forge-bundle-20080831/main/database-1.0.1/src/configure.base	2009-02-25 23:56:58.000000000 +0100
+@@ -352,13 +352,13 @@
+ 
+ # check for postgres
+ AC_DEFINE(have_postgres)
+-AC_CHECK_HEADER(postgresql/libpq-fe.h, have_postgres=yes, have_postgres=no)
++AC_CHECK_HEADER(libpq-fe.h, have_postgres=yes, have_postgres=no)
+ if test $have_postgres = yes ; then
+     POSTGRES_STATUS="yes"
+     AC_SUBST(DEFHAVE_POSTGRES)
+     DEFHAVE_POSTGRES="HAVE_POSTGRES=1"
+ else
+-    POSTGRES_STATUS="postgresql/libpq-fe.h not found"
++    POSTGRES_STATUS="libpq-fe.h not found"
+ fi
+ 
+ # check for mysql
+--- octave-forge-bundle-20080831/main/database-1.0.1/src/postgres.i~	2008-08-24 18:14:37.000000000 +0200
++++ octave-forge-bundle-20080831/main/database-1.0.1/src/postgres.i	2009-02-25 23:56:15.000000000 +0100
+@@ -11,7 +11,7 @@
+ %module postgres
+ 
+ %{
+-#include <postgresql/libpq-fe.h>
++#include <libpq-fe.h>
+ #include "generic_db.h"
+ %}
+ 
+--- octave-forge-bundle-20080831/main/database-1.0.1/src/postgres_wrap.cpp~	2008-08-24 18:14:37.000000000 +0200
++++ octave-forge-bundle-20080831/main/database-1.0.1/src/postgres_wrap.cpp	2009-02-25 23:56:22.000000000 +0100
+@@ -2067,7 +2067,7 @@
+ #include <stdexcept>
+ 
+ 
+-#include <postgresql/libpq-fe.h>
++#include <libpq-fe.h>
+ #include "generic_db.h"
+ 
+ 
