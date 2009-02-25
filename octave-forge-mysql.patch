@@ -1,0 +1,25 @@
+--- octave-forge-bundle-20080831/main/database-1.0.1/src/mysql_filtered.h.orig	2008-08-24 18:14:37.000000000 +0200
++++ octave-forge-bundle-20080831/main/database-1.0.1/src/mysql_filtered.h	2009-02-26 00:47:25.000000000 +0100
+@@ -260,7 +260,7 @@
+ typedef struct st_mysql
+ {
+   NET		net;			/* Communication parameters */
+-  gptr		connector_fd;		/* ConnectorFd for SSL */
++  unsigned char	*connector_fd;		/* ConnectorFd for SSL */
+   char		*host,*user,*passwd,*unix_socket,*server_version,*host_info,*info;
+   char          *db;
+   struct charset_info_st *charset;
+--- octave-forge-bundle-20080831/main/database-1.0.1/src/configure.base~	2009-02-26 00:29:39.000000000 +0100
++++ octave-forge-bundle-20080831/main/database-1.0.1/src/configure.base	2009-02-26 00:50:26.000000000 +0100
+@@ -81,9 +81,9 @@
+ 	[  --with-altopath         override path for alternative oct-files],
+ 	[altopath=$withval])	
+ AC_ARG_WITH([swig], 
+-            [AS_HELP_STRING([--with-swig],[use swig wrapper generator [no]])],
++            [AS_HELP_STRING([--with-swig],[use swig wrapper generator [yes]])],
+             [with_swig=$withval],
+-            [with_swig=no])
++            [with_swig=yes])
+ 
+ if test -n "$path" ; then
+    test -z "$mpath" && mpath=$path 
