@@ -8,6 +8,7 @@ Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-bundle-%{version}.tar.gz
 # Source0-md5:	680ea705eb7434e219eb4a3eaffd7fba
 Patch0:		%{name}-postgresql.patch
+Patch1:		%{name}-mysql.patch
 URL:		http://octave.sourceforge.net/
 BuildRequires:	GiNaC-devel
 BuildRequires:	ImageMagick-c++-devel
@@ -70,8 +71,16 @@ for d in main extra; do
 	for pkg in *.tar.gz ; do
 		tar zxf $pkg
 	done
+	cd ..
 done
+
+# needs very old ffmpeg?
+rm -rf main/video-1.0.1
+# needs jogl, WTF is jogl? java sucks
+rm -rf extra/jhandles-0.3.4
+
 %patch0 -p1
+%patch1 -p1
 cd main/database-1.0.1/src
 ./autogen.sh
 
@@ -79,15 +88,15 @@ cd main/database-1.0.1/src
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
 for d in main extra; do
 	cd $d
-	for pkg in *.tar.gz ; do
-		P=${pkg%%.tar.gz}
-		cd $P
+	for pkg in * ; do
+		[ -d $pkg ] || continue
+		cd $pkg
 		if [ -e src/configure ]; then
 			cd src
 			%configure
 			cd ..
 		fi
-		%{__make} || :
+		%{__make}
 		cd ..
 	done
 	cd ..
