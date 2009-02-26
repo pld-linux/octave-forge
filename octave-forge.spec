@@ -40,14 +40,12 @@ BuildRequires:	swig >= 1.3.38
 BuildRequires:	tetex
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
+BuildRequires:	texinfo-texi2dvi
 #BuildRequires:	unixODBC-devel
 BuildRequires:	xorg-lib-libX11-devel
 Requires:	octave >= 2:2.9.15
 Requires:	ImageMagick
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		octave_m_site_dir %(octave-config --m-site-dir 2>/dev/null)
-%define		octave_oct_site_dir %(octave-config --oct-site-dir 2>/dev/null)
 
 %description
 Set of custom scripts, functions and extensions for GNU Octave.
@@ -107,45 +105,28 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	MPATH="$RPM_BUILD_ROOT%{octave_m_site_dir}/%{name}" \
-	OPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}/%{name}" \
-	XPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}" \
-	ALTMPATH="$RPM_BUILD_ROOT%{octave_m_site_dir}/%{name}" \
-	ALTOPATH="$RPM_BUILD_ROOT%{octave_oct_site_dir}/%{name}" \
-	mandir="$RPM_BUILD_ROOT%{_mandir}" \
-	bindir="$RPM_BUILD_ROOT%{_bindir}"
-find $RPM_BUILD_ROOT -name PKG_ADD -print0 | xargs -0 rm -f
-
-mv $RPM_BUILD_ROOT%{_bindir}/mex $RPM_BUILD_ROOT%{_bindir}/mex-octave
+for d in main extra; do
+	cd $d
+	for pkg in * ; do
+		[ -d $pkg ] || continue
+		cd $pkg
+		%{__make} install \
+			DESTDIR=$RPM_BUILD_ROOT
+		cd ..
+	done
+	cd ..
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if [ -f "%{_datadir}/octave/site/m/startup/octaverc" ] && \
-	! grep -q "octave-forge" "%{_datadir}/octave/site/m/startup/octaverc"
-then
-	echo "LOADPATH = [ '%{octave_oct_site_dir}/octave-forge:%{octave_m_site_dir}/octave-forge/:', LOADPATH ];" >> "%{_datadir}/octave/site/m/startup/octaverc"
-fi
+octave -q -H --no-site-file --eval "pkg('rebuild');"
 
 %postun
-if [ "$1" = "0" ]; then
-	umask 027
-	grep -E -v "octave-forge" "%{_datadir}/octave/site/m/startup/octaverc" > "%{_datadir}/octave/site/m/startup/octaverc.tmp"
-	mv -f "%{_datadir}/octave/site/m/startup/octaverc.tmp" "%{_datadir}/octave/site/m/startup/octaverc"
-fi
+octave -q -H --no-site-file --eval "pkg('rebuild');"
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS ChangeLog README RELEASE-NOTES TODO
-%doc doc/*.html doc/coda/*.sgml doc/coda/appendices/*.sgml
-%doc doc/coda/oct/*.sgml doc/coda/standalone/*.sgml
-%attr(755,root,root) %{_bindir}/*
-%{_mandir}/man*/*
-%{octave_m_site_dir}/%{name}
-%dir %{octave_oct_site_dir}/%{name}
-%{octave_oct_site_dir}/%{name}/*.[ho]
-%attr(755,root,root) %{octave_oct_site_dir}/%{name}/*.oct
-%attr(755,root,root) %{octave_oct_site_dir}/aurecord
-%attr(755,root,root) %{octave_oct_site_dir}/rasmol.sh
+%{_libdir}/octave/packages/*
+%{_datadir}/octave/packages/*
