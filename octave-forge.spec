@@ -31,7 +31,7 @@ BuildRequires:	libgcj-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 #BuildRequires:	mysql-devel
-BuildRequires:	octave-devel >= 2:2.9.15
+BuildRequires:	octave-devel >= 2:3.0.3-4
 BuildRequires:	pcre-devel
 #BuildRequires:	postgresql-devel
 BuildRequires:	qhull-devel
@@ -43,7 +43,7 @@ BuildRequires:	texinfo
 BuildRequires:	texinfo-texi2dvi
 #BuildRequires:	unixODBC-devel
 BuildRequires:	xorg-lib-libX11-devel
-Requires:	octave >= 2:2.9.15
+Requires:	octave >= 2:3.0.3-4
 Requires:	ImageMagick
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
