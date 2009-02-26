@@ -30,17 +30,17 @@ BuildRequires:	lapack-devel
 BuildRequires:	libgcj-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
-BuildRequires:	mysql-devel
+#BuildRequires:	mysql-devel
 BuildRequires:	octave-devel >= 2:2.9.15
 BuildRequires:	pcre-devel
-BuildRequires:	postgresql-devel
+#BuildRequires:	postgresql-devel
 BuildRequires:	qhull-devel
-BuildRequires:	sqlite3-devel
+#BuildRequires:	sqlite3-devel
 BuildRequires:	swig >= 1.3.38
 BuildRequires:	tetex
 BuildRequires:	tetex-dvips
 BuildRequires:	texinfo
-BuildRequires:	unixODBC-devel
+#BuildRequires:	unixODBC-devel
 BuildRequires:	xorg-lib-libX11-devel
 Requires:	octave >= 2:2.9.15
 Requires:	ImageMagick
@@ -78,11 +78,13 @@ done
 rm -rf main/video-1.0.1
 # needs jogl, WTF is jogl? java sucks
 rm -rf extra/jhandles-0.3.4
-
-%patch0 -p1
-%patch1 -p1
-cd main/database-1.0.1/src
-./autogen.sh
+# If someone really wants the pain, then uncomment stuff below
+rm -rf main/database-1.0.1
+#patch0 -p1
+#patch1 -p1
+#cd main/database-1.0.1/src
+#./autogen.sh
+#rm mysql_wrap.cpp
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
