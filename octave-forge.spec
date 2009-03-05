@@ -68,7 +68,7 @@ do istniejącego pakietu, octave-forge jest odpowiednim miejscem.
 
 %prep
 %setup -q -n %{name}-bundle-%{version}
-for d in main extra; do
+for d in main extra %{?with_nonfree:nonfree}; do
 	cd $d
 	for pkg in *.tar.gz ; do
 		tar zxf $pkg
