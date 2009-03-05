@@ -1,8 +1,12 @@
+#
+# Conditional build:
+%bcond_with	nonfree		# build nonfree extensions
+#
 Summary:	Extensions for GNU Octave
 Summary(pl.UTF-8):	Rozszerzenia dla GNU Octave
 Name:		octave-forge
 Version:	20080831
-Release:	1
+Release:	1%{?with_nonfree:.nonfree}
 License:	GPL
 Group:		Applications/Math
 Source0:	http://dl.sourceforge.net/octave/%{name}-bundle-%{version}.tar.gz
@@ -86,7 +90,7 @@ rm -rf main/database-1.0.1
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
-for d in main extra; do
+for d in main extra %{?with_nonfree:nonfree}; do
 	cd $d
 	for pkg in * ; do
 		[ -d $pkg ] || continue
@@ -105,7 +109,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-for d in main extra; do
+for d in main extra %{?with_nonfree:nonfree}; do
 	cd $d
 	for pkg in * ; do
 		[ -d $pkg ] || continue
