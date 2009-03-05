@@ -18,6 +18,7 @@ BuildRequires:	GiNaC-devel
 BuildRequires:	ImageMagick-c++-devel
 # for jhandlers which doesn't build :/
 #BuildRequires:	OpenGL-devel
+%{?with_nonfree:BuildRequires:	arpack-devel}
 BuildRequires:	autoconf
 BuildRequires:	bash
 BuildRequires:	blas-devel
