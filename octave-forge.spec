@@ -101,7 +101,7 @@ for d in main extra %{?with_nonfree:nonfree}; do
 			%configure
 			cd ..
 		fi
-		%{__make}
+		%{__make} -j1
 		cd ..
 	done
 	cd ..
@@ -115,7 +115,7 @@ for d in main extra %{?with_nonfree:nonfree}; do
 	for pkg in * ; do
 		[ -d $pkg ] || continue
 		cd $pkg
-		%{__make} install \
+		%{__make} -j1 install \
 			DESTDIR=$RPM_BUILD_ROOT
 		cd ..
 	done
