@@ -36,6 +36,7 @@ BuildRequires:	libgcj-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 #BuildRequires:	mysql-devel
+BuildRequires:	netcdf-devel
 BuildRequires:	octave-devel >= 2:3.0.3-4
 BuildRequires:	pcre-devel
 #BuildRequires:	postgresql-devel
