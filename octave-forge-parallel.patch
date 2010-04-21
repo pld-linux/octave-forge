@@ -1,0 +1,352 @@
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/DESCRIPTION	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/DESCRIPTION	2010-02-09 11:52:58.000000000 +0100
+@@ -1,6 +1,6 @@
+ Name: Parallel
+-Version: 2.0.0
+-Date: 2009-03-29
++Version: 2.0.1
++Date: 2010-02-09
+ Author: Hayato Fujiwara and Olaf Till <olaf.till@uni-jena.de>
+ Maintainer: Hayato Fujiwara and Olaf Till <olaf.till@uni-jena.de>
+ Title: Parallel Computing.
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/inst/__bw_computing_machine__.m	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/inst/__bw_computing_machine__.m	2009-08-20 15:40:14.000000000 +0200
+@@ -46,11 +46,11 @@
+     end_try_catch
+ 
+     if (err)
+-      __bw_psend__ (stdout, 2, true);
+-      __bw_psend__ (stdout, msg, true);
++      __bw_psend__ (stdout, 2);
++      __bw_psend__ (stdout, msg);
+     else
+-      __bw_psend__ (stdout, 0, true);
+-      __bw_psend__ (stdout, res, true);
++      __bw_psend__ (stdout, 0);
++      __bw_psend__ (stdout, res);
+     endif
+     fflush (stdout);
+ 
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/inst/__bw_scheduler__.m	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/inst/__bw_scheduler__.m	2009-08-20 15:40:14.000000000 +0200
+@@ -147,8 +147,8 @@
+ 	[pdw, pdr, pid] = popen2 (cmd, cmd_args, 1);
+ 	while (true) # break if eof on pdr
+ 	  arg_id = __bw_prcv__ (pdrc).psend_var;
+-	  __bw_psend__ (pdw, args{arg_id}, true);
+-	  __bw_psend__ (pdw, arg_id, true);
++	  __bw_psend__ (pdw, args{arg_id});
++	  __bw_psend__ (pdw, arg_id);
+ 	  fflush (pdw);
+ 	  try
+ 	    if (ismatrix (tp = __bw_prcv__ (pdr)))
+@@ -167,8 +167,8 @@
+ 	      break;
+ 	    end_try_catch
+ 	    tp = tp.psend_var;
+-	    __bw_psend__ (pdwc, 2, true);
+-	    __bw_psend__ (pdwc, tp, true);
++	    __bw_psend__ (pdwc, 2);
++	    __bw_psend__ (pdwc, tp);
+ 	    fflush (pdwc);
+ 	  else # success
+ 	    try
+@@ -179,15 +179,15 @@
+ 	      break;
+ 	    end_try_catch
+ 	    tp = tp.psend_var;
+-	    __bw_psend__ (pdwc, 0, true);
+-	    __bw_psend__ (pdwc, tp, true);
++	    __bw_psend__ (pdwc, 0);
++	    __bw_psend__ (pdwc, tp);
+ 	    fflush (pdwc);
+ 	  endif
+ 	endwhile
+ 	waitpid (pid);
+ 	pclose (pdr);
+ 	pclose (pdw);
+-	__bw_psend__ (pdwc, 1, true); # computing machine (got) unreachable
++	__bw_psend__ (pdwc, 1); # computing machine (got) unreachable
+ 	fflush (pdwc);
+ 	if ((rest = connect_timeout + constart - time) > 0)
+ 	  pause (rest);
+@@ -225,7 +225,7 @@
+     ## there should always be free childs here, give them a task
+     for id = 1:min (length (m_free), length (args_unused))
+       ## tell child to use this argument
+-      __bw_psend__ (pipesw(m_free(id)), args_unused(id), true);
++      __bw_psend__ (pipesw(m_free(id)), args_unused(id));
+       fflush (pipesw(m_free(id)));
+       ## mark child active (busy) and note argument of machine
+       m_active(m_free(id)) = args_unused(id);
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/inst/getid.m	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/inst/getid.m	2010-02-09 11:52:58.000000000 +0100
+@@ -15,6 +15,8 @@
+ 
+ function retval = getid (sockets)
+ 
++  ## getid (sockets)
++
+   retval = find(sockets==0)(1);
+   
+ endfunction
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/inst/scloseall.m	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/inst/scloseall.m	2010-02-09 11:56:37.000000000 +0100
+@@ -15,6 +15,8 @@
+ 
+ function scloseall (sockets)
+ 
++  ## scloseall (sockets)
++
+   reval("sclose(sockets);exit;",sockets);
+   sclose(sockets);
+ 
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/src/__bw_prcv__.cc	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/src/__bw_prcv__.cc	2009-08-20 15:40:14.000000000 +0200
+@@ -20,7 +20,7 @@
+ #include <octave/oct-stream.h>
+ #include <octave/oct-map.h>
+ 
+-DEFUN_DLD (__bw_prcv__, args, nargout, "prcv (pd)\n\
++DEFUN_DLD (__bw_prcv__, args, nargout, "__bw_prcv__ (pd)\n\
+ Reads one variable from pipe stream 'pd'.\n\
+ The variable must have been coded in Octaves binary format,\n\
+ including a header. This can be done by 'psend ()'.\n\
+@@ -29,8 +29,8 @@
+ call 'feof ()' afterwards. If EOF is met later in reading,\n\
+ it causes an error.\n\
+ Normally, a structure is returned with the variable under its name\n\
+-in a single field. With no output arguments, the variable is installed\n\
+-into memory.\n\
++in a single field. Originally, with no output arguments, the variable was\n\
++installed into memory, but this has been disabled.\n\
+ \n\
+ This function may change and is internal to the parallel package.\n")
+ {
+@@ -38,10 +38,10 @@
+ 	Octave_map retstruct;
+ 
+ 	if (args.length () != 1) {
+-		error ("prcv: exactly one argument required\n");
++		error ("__bw_prcv__: exactly one argument required\n");
+ 		return retval;
+ 	}
+-	octave_stream is = octave_stream_list::lookup (args(0), "prcv");
++	octave_stream is = octave_stream_list::lookup (args(0), "__bw_prcv__");
+ 	if (error_state) return retval;
+ 
+ 	if (is.is_open ()) {
+@@ -49,7 +49,7 @@
+ 		// 114: "r", 43: "+"
+ 		if (! strchr (mode.c_str (), 114) &&
+ 		    ! strchr (mode.c_str (), 43)) {
+-			error ("prcv: stream not readable\n");
++			error ("__bw_prcv__: stream not readable\n");
+ 			return retval;
+ 		}
+ #ifdef PATCHED_PIPE_CODE
+@@ -59,13 +59,13 @@
+ 
+ 		// 98: "b"
+ 		if (! strchr (mode.c_str (), 98)) {
+-			error ("prcv: stream not binary\n");
++			error ("__bw_prcv__: stream not binary\n");
+ 			return retval;
+ 		}
+ #endif
+ 	}
+ 	else {
+-		error ("prcv: stream not open\n");
++		error ("__bw_prcv__: stream not open\n");
+ 		return retval;
+ 	}
+ 
+@@ -100,50 +100,17 @@
+ 	// after the header exactly one variable is expected. This
+ 	// is mended by asking for EOF here.
+ 	if (ps.eof () || error_state || name.empty ()) {
+-		error ("prcv: error in reading variable data\n");
++		error ("__bw_prcv__: error in reading variable data\n");
+ 		return retval;
+ 	}
+ 	if  (! tc.is_defined ()) {
+ 		// What means this?
+-		error ("prcv: error in reading variable\n");
++		error ("__bw_prcv__: error in reading variable\n");
+ 		return retval;
+ 	}
+ 
+-	if (nargout == 1) {
+-		retstruct.assign(name, tc);
+-		retval = retstruct;
+-	}
+-	else {
+-		// install_loaded_variable () is static ... here the
+-		// code equivalent to
+-		//
+-		// install_loaded_variable (true, name, tc, global, doc);
+-		//
+-		// is duplicated (except one error check) ...
+-
+-		symbol_record *lsr = curr_sym_tab->lookup (name);
+-
+-		bool is_undefined = true;
+-		bool is_variable = false;
+-
+-		if (lsr) {
+-			is_undefined = ! lsr->is_defined ();
+-			is_variable = lsr->is_variable ();
+-		}
+-
+-		symbol_record *sr = 0;
++	retstruct.assign(name, tc);
++	retval = retstruct;
+ 
+-		if (! global && (is_variable || is_undefined)) {
+-			lsr = curr_sym_tab->lookup (name, true);
+-			sr = lsr;
+-		}
+-		else {
+-			lsr = curr_sym_tab->lookup (name, true);
+-			link_to_global_variable (lsr);
+-			sr = lsr;
+-		}
+-		sr->define (tc);
+-		sr->document (doc);
+-	}
+ 	return retval;
+ }
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/src/__bw_psend__.cc	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/src/__bw_psend__.cc	2009-08-20 15:40:14.000000000 +0200
+@@ -19,72 +19,31 @@
+ #include <octave/ls-oct-binary.h>
+ #include <octave/oct-stream.h>
+ 
+-DEFUN_DLD (__bw_psend__, args, , "psend (pd, name[, value])\n\
+-Sends variable named in 'name' through pipe stream 'pd'.\n\
+-With 'value' given and having boolean value 'true', the\n\
+-contents of the second argument itself is sent under the name\n\
+-'psend_var'.\n\
++DEFUN_DLD (__bw_psend__, args, , "psend (pd, var)\n\
++The contents of 'var' is sent through the pipe stream 'pd'\n\
++under the name 'psend_var'.\n\
+ The variable is coded in Octaves binary format,\n\
+ a header is included. It can be read by 'prcv ()'.\n\
+ \n\
+ This function may change and is internal to the parallel package.\n")
+ {
+-	std::string name;
+-	std::string help;
+-	int global;
+ 	octave_value retval;
+ 	octave_value tc;
+-	bool contents;
+ 
+-	if (args.length () == 2) 
+-		contents = false;
+-	else if (args.length () == 3) {
+-		if (! args(2).is_real_scalar ()) {
+-			error ("psend: third variable, if given, must be a real scalar.\n");
+-			return retval;
+-		}
+-		contents = args(2).scalar_value ();
+-	} else {
+-		error ("psend: two or three arguments required\n");
++	if (args.length () != 2) {
++		error ("__bw_psend__: two arguments required\n");
+ 		return retval;
+ 	}
+ 
+-	if (contents) {
+-		name = "psend_var";
+-		tc = args(1);
+-		help = "";
+-		global = false;
+-	}
+-	else {
+-		if (args(1).is_string ()) name = args(1).string_value ();
+-		else {
+-			error ("psend: if named variable is to be sent, second argument must be a string\n");
+-			return retval;
+-		}
+-		symbol_record *var = curr_sym_tab->lookup (name);
+-	        if (! var) {
+-			error ("psend: no such variable %s\n", name.c_str ());
+-			return retval;
+-		}
+-		tc = var->def ();
+-		help = var->help ();
+-		global = var->is_linked_to_global ();
+-	}
+-	if (! tc.is_defined ()) {
+-		// What means this?
+-		error ("psend: variable not defined\n");
+-		return retval;
+-	}
+-		
+-	octave_stream os = octave_stream_list::lookup (args(0), "psend");
++	octave_stream os = octave_stream_list::lookup (args(0), "__bw_psend__");
+ 	if (error_state) {
+-		error ("psend: no valid file id\n");
++		error ("__bw_psend__: no valid file id\n");
+ 		return retval;
+ 	}
+ 	if (os.is_open ()) {
+ 		std::string mode = os.mode_as_string (os.mode ());
+ 		if (mode == "r" || mode == "rb") {
+-			error ("psend: stream not writable\n");
++			error ("__bw_psend__: stream not writable\n");
+ 			return retval;
+ 		}
+ #ifdef PATCHED_PIPE_CODE_15TH_JUNE_07
+@@ -94,20 +53,20 @@
+ 
+ 		// 98: "b"
+ 		if (! strchr (mode.c_str (), 98)) {
+-			error ("psend: stream not binary\n");
++			error ("__bw_psend__: stream not binary\n");
+ 			return retval;
+ 		}
+ #endif
+ 	}
+ 	else {
+-		error ("psend: stream not open\n");
++		error ("__bw_psend__: stream not open\n");
+ 		return retval;
+ 	}
+ 
+ 	std::ostream *tps = os.output_stream ();
+ 	std::ostream& ps = *tps;
+ 	write_header (ps, LS_BINARY);
+-	save_binary_data (ps, tc, name, help, global, false);
++	save_binary_data (ps, args(1), "psend_var", "", false, false);
+ 
+ 	return retval;
+ }
+--- octave-forge-bundle-20090607/main/parallel-2.0.0.orig/src/pserver.cc	2009-05-08 15:17:57.000000000 +0200
++++ octave-forge-bundle-20090607/main/parallel-2.0.0/src/pserver.cc	2009-08-20 15:40:14.000000000 +0200
+@@ -44,6 +44,7 @@
+ #include "input.h"
+ #include "quit.h"
+ 
++#include <iostream>
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+@@ -61,8 +62,6 @@
+ // SSIZE_MAX might be for 64-bit. Limit to 2^31-1
+ #define BUFF_SIZE 2147483647
+ 
+-static bool quitting_gracefully = false;
+-
+ // Handle server SIGTERM SIGQUIT
+ 
+ static RETSIGTYPE
+@@ -99,6 +98,7 @@
+ do_octave_atexit_server (void)
+ {
+   static bool deja_vu = false;
++  extern bool quitting_gracefully;
+ 
+   while (! octave_atexit_functions.empty ())
+     {

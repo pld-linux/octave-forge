@@ -1,0 +1,14 @@
+--- forge-bundle-20080831/main/fixed-0.7.10/src/Array-f.cc~	2008-08-24 18:14:29.000000000 +0200
++++ forge-bundle-20080831/main/fixed-0.7.10/src/Array-f.cc	2010-03-11 12:37:36.679405370 +0100
+@@ -34,9 +34,9 @@
+ #include <octave/MArray.h>
+ #include <octave/MArray.cc>
+ 
+-template class OCTAVE_FIXED_API Array<FixedPoint>;
++INSTANTIATE_ARRAY(FixedPoint, OCTAVE_FIXED_API);
+ template class MArray<FixedPoint>;
+-template class OCTAVE_FIXED_API Array<FixedPointComplex>;
++INSTANTIATE_ARRAY(FixedPointComplex, OCTAVE_FIXED_API);
+ template class MArray<FixedPointComplex>;
+ 
+ template int assign (Array<FixedPoint>&, const Array<FixedPoint>&);
