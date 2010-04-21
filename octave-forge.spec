@@ -45,6 +45,7 @@ BuildRequires:	pcre-devel
 #BuildRequires:	postgresql-devel
 BuildRequires:	qhull-devel
 #BuildRequires:	sqlite3-devel
+BuildRequires:	sed >= 4.0
 BuildRequires:	swig >= 1.3.38
 BuildRequires:	tetex
 BuildRequires:	tetex-dvips
@@ -101,6 +102,8 @@ rm -r main/database-1.0.4
 # does not build with octave 3.2.4
 rm -r extra/graceplot-1.0.8
 rm -r extra/java-1.2.6
+
+sed -i -e 's|/usr/bin/awk|/bin/awk|' extra/oct2mat-1.0.7/inst/oct2mat
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
