@@ -1,0 +1,42 @@
+diff -ur octave-forge-bundle-20090607/main/image-1.0.10.orig/src/pngread.cc octave-forge-bundle-20090607/main/image-1.0.10/src/pngread.cc
+--- octave-forge-bundle-20090607/main/image-1.0.10.orig/src/pngread.cc	2009-06-07 12:45:04.000000000 +0200
++++ octave-forge-bundle-20090607/main/image-1.0.10/src/pngread.cc	2010-04-21 16:10:39.715513799 +0200
+@@ -183,7 +183,7 @@
+   
+   unsigned char sig[8];
+   const size_t bytes_read = fread (sig, 1, 8, infile);
+-  if (!png_check_sig (sig, 8) || bytes_read != 8) {
++  if (png_sig_cmp(sig, 0, 8) != 0 || bytes_read != 8) {
+     error ("pngread invalid signature in %s", filename); 
+     fclose (infile);
+     return NULL;
+@@ -207,7 +207,7 @@
+   /* Set error handling */
+   if (setjmp(png_jmpbuf(png_ptr))) {
+       error("pngread: libpng exited abnormally");
+-      png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
++      png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+       fclose(infile);
+       return NULL;
+   }
+@@ -229,7 +229,7 @@
+       png_set_palette_to_rgb(png_ptr);
+   }
+   if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) {
+-      png_set_gray_1_2_4_to_8(png_ptr); // this function deprecated need to be redone
++      png_set_expand_gray_1_2_4_to_8(png_ptr); // this function deprecated need to be redone
+       bit_depth=8;
+       info_ptr->bit_depth=bit_depth;
+   }
+diff -ur octave-forge-bundle-20090607/main/image-1.0.10.orig/src/pngwrite.cc octave-forge-bundle-20090607/main/image-1.0.10/src/pngwrite.cc
+--- octave-forge-bundle-20090607/main/image-1.0.10.orig/src/pngwrite.cc	2009-06-07 12:45:04.000000000 +0200
++++ octave-forge-bundle-20090607/main/image-1.0.10/src/pngwrite.cc	2010-04-21 16:11:15.799089563 +0200
+@@ -126,7 +126,7 @@
+   if (!info_ptr) {
+       fclose(fp);
+       error("pngwrite: cannot not create image structure");
+-      png_destroy_write_struct(&png_ptr, png_infopp_NULL);
++      png_destroy_write_struct(&png_ptr, NULL);
+       return;
+   }
+ 
